@@ -10,6 +10,8 @@ import math
 import matplotlib.pyplot as plt
 from time import clock
 
+
+
 class Ant:
     
     def __init__(self, map_):
@@ -33,7 +35,6 @@ class Ant:
         self.path_length = distance([self.map.nodes[i] for i in self.path])
         
             
-    
     def get_path_length(self):
         return self.path_length
     
@@ -80,11 +81,9 @@ class TSPMap:
             self.update_pheromones(optimal_ant)
             self.optimal_path = optimal_ant.get_path()
             self.optimal_length = optimal_ant.get_path_length()
-            self.optimal_history.append(self.optimal_length)
+            self.optimal_history.append(self.optimal_length)    
             
-            
-            
-    
+             
     def update_pheromones(self, optimal_ant):
         self.pheromones = [[self.pheromones[i][j] * (1 - self.evaporating_rate) 
                             for j in range(len(self.pheromones))] for i in range(len(self.pheromones))]
@@ -100,8 +99,10 @@ class TSPMap:
     def get_optimal_history(self):
         return self.optimal_history
     
+    
     def get_optimal_path(self):
         return [self.nodes[i] for i in self.optimal_path]
+    
     
     def get_optimal_distance(self):
         return self.optimal_distance
@@ -128,9 +129,7 @@ if __name__ == "__main__":
     map_ = TSPMap(num_of_ants=NUM_OF_ANTS, evaporating_rate=EVAPORATING_RATE, auto_generate=False, source=SOURCE)
     map_.run(NUM_OF_TRIALS)
     end = clock()
-    print(f'Total time: {end - start}')
     history = map_.get_optimal_history()
-    print(history[-1])
     path = map_.get_optimal_path()
     path.append(path[0])
     X = [path[i][0] for i in range(len(path))]
