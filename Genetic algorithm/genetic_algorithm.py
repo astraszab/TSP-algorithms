@@ -63,7 +63,8 @@ def mutate(path, mutation_rate):
 
 if __name__ == '__main__':
     SIZE = 10
-    GENERATION_SIZE = 20
+    GENERATION_SIZE = 50
+    REPRODUCTION_CAP = 0.05 # percentage of population allowed to reproduce
     NUMBER_OF_GENERATIONS = 20
     MUTATION_RATE = 0.2
     
@@ -80,11 +81,13 @@ if __name__ == '__main__':
     history.append(distance(min(generation, key=distance)))
     
     for i in range(NUMBER_OF_GENERATIONS):
+        generation.sort(key=distance)
+        generation = generation[: round(GENERATION_SIZE * REPRODUCTION_CAP)]
         weights = [1 / distance(path) for path in generation]
-        p1 = min(generation, key=distance)
-        generation.remove(p1)
-        p2 = min(generation, key=distance)
-        offspring = [mutate(crossover(p1, p2), MUTATION_RATE) for j in range(GENERATION_SIZE)]
+        offspring = []
+        for j in range(GENERATION_SIZE):
+            parents = random.choices(generation, weights=weights, k=2)
+            offspring.append(mutate(crossover(parents[0], parents[1]), MUTATION_RATE))
         generation = offspring
         history.append(distance(min(generation, key=distance)))
         
@@ -100,6 +103,7 @@ if __name__ == '__main__':
     plt.subplot(211)
     plt.title('Learning curve\n'
               f'Generation size: {GENERATION_SIZE}\n'
+              f'Reproduction cap: {REPRODUCTION_CAP}\n'
               f'Number of generations: {NUMBER_OF_GENERATIONS}\n'
               f'Mutation rate: {MUTATION_RATE}\n'
               f'Found solution: {history[-1]}\n'
